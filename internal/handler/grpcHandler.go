@@ -39,7 +39,7 @@ func (ph *PostHandler) CreatePost(ctx context.Context, req *blogpb.CreateRequest
 func (ph *PostHandler) ReadPost(ctx context.Context, req *blogpb.ReadRequest) (*blogpb.ReadResponse, error) {
 	post, err := ph.repo.Read(&ctx, req.PostID)
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "post not found")
+		return nil, status.Error(codes.NotFound, "post not found")
 	}
 	resp := &blogpb.ReadResponse{
 		Post:  transformToPost(post),
@@ -60,7 +60,7 @@ func (ph *PostHandler) UpdatePost(ctx context.Context, req *blogpb.UpdateRequest
 func (ph *PostHandler) DeletePost(ctx context.Context, req *blogpb.DeleteRequest) (*blogpb.DeleteResponse, error) {
 	msg := ph.repo.Delete(&ctx, req.PostID)
 	if msg != "" && msg == errors.PostNotFound {
-		return nil, status.Errorf(codes.NotFound, fmt.Sprintf(errors.PostNotFound+": %s", req.PostID))
+		return nil, status.Error(codes.NotFound, fmt.Sprintf(errors.PostNotFound+": %s", req.PostID))
 	}
 	resp := &blogpb.DeleteResponse{Message: fmt.Sprintf("Post %s Deleted", req.PostID)}
 	return resp, nil

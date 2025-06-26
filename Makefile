@@ -11,6 +11,13 @@ generate:
 		--go-grpc_opt=paths=source_relative \
 		$(PROTO_FILES)
 
+.PHONY: proto-doc
+
+proto-doc:
+	protoc --doc_out=docs \
+	       --doc_opt=html,index.html \
+	       api/proto/blog.proto
+
 
 build:
 	go build -o bin/server ./cmd/server

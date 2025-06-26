@@ -4,6 +4,7 @@ package blog;
 
 option go_package = "github.com/pradeepitm12/cb/bee/api/gen/blogpb;blogpb";
 
+// Post contains metadata and content of the post
 message Post{
    string postID=1;
    string title=2;
@@ -14,6 +15,7 @@ message Post{
    repeated string tags=7;
 }
 
+// CreateRequest contatins req params to create a post
 message CreateRequest{
    string title =1;
    string content =2;
@@ -22,20 +24,24 @@ message CreateRequest{
    repeated string tags=5;
 }
 
+// CreateResponse is ouput of the create request
 message CreateResponse{
    Post post =1;
    string error =2;
 }
 
+// ReadRequest takes id to read a post.
 message ReadRequest {
    string postID=1;
 }
 
+//ReadResponse oputput of readRequest
 message ReadResponse {
    Post post =1;
    string error=2;
 }
 
+// UpdateRequest contains info fo update a post
 message UpdateRequest{
    string id=1;
    string title=2;
@@ -44,19 +50,23 @@ message UpdateRequest{
    repeated string tags=5;
 }
 
+// UpdateResponse output of update
 message UpdateResponse{
    Post post=1;
    string error=2;
 }
 
+// DeleteRequest takes id of post to be deleted.
 message DeleteRequest{
    string postID=1;
 }
 
+// DeleteResponse output of delete
 message DeleteResponse{
    string message=2;
 }
 
+// BlogPostService contains services to create, read, delete, and update a post.
 service BlogPostService {
   rpc CreatePost (CreateRequest) returns (CreateResponse);
   rpc ReadPost (ReadRequest)returns (ReadResponse);
