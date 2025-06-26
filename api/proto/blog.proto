@@ -15,7 +15,7 @@ message Post{
    repeated string tags=7;
 }
 
-// CreateRequest contatins req params to create a post
+// CreateRequest contains req params to create a post
 message CreateRequest{
    string title =1;
    string content =2;
@@ -24,7 +24,7 @@ message CreateRequest{
    repeated string tags=5;
 }
 
-// CreateResponse is ouput of the create request
+// CreateResponse is output of the create request
 message CreateResponse{
    Post post =1;
    string error =2;
@@ -35,7 +35,7 @@ message ReadRequest {
    string postID=1;
 }
 
-//ReadResponse oputput of readRequest
+//ReadResponse output of readRequest
 message ReadResponse {
    Post post =1;
    string error=2;
