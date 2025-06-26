@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package blog;
+
+option go_package = "github.com/pradeepitm12/cb/bee/api/gen/blogpb;blogpb";
+
+message Post{
+   string postID=1;
+   string title=2;
+   string content=3;
+   string author=4;
+   string publicationDate=5;
+   string lastModified=6;
+   repeated string tags=7;
+}
+
+message CreateRequest{
+   string title =1;
+   string content =2;
+   string author =3;
+   string publicationDate =4;
+   repeated string tags=5;
+}
+
+message CreateResponse{
+   Post post =1;
+   string error =2;
+}
+
+message ReadRequest {
+   string postID=1;
+}
+
+message ReadResponse {
+   Post post =1;
+   string error=2;
+}
+
+message UpdateRequest{
+   string id=1;
+   string title=2;
+   string content=3;
+   string author=4;
+   repeated string tags=5;
+}
+
+message UpdateResponse{
+   Post post=1;
+   string error=2;
+}
+
+message DeleteRequest{
+   string postID=1;
+}
+
+message DeleteResponse{
+   string message=2;
+}
+
+service BlogPostService {
+  rpc CreatePost (CreateRequest) returns (CreateResponse);
+  rpc ReadPost (ReadRequest)returns (ReadResponse);
+  rpc UpdatePost (UpdateRequest)returns (UpdateResponse);
+  rpc DeletePost (DeleteRequest)returns (DeleteResponse);
+}

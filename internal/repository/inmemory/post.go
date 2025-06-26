@@ -1,0 +1,69 @@
+package inmemory
+
+import (
+	"context"
+	"fmt"
+	"sync"
+	"time"
+
+	"github.com/pradeepitm12/cb/bee/internal/errors"
+	"github.com/pradeepitm12/cb/bee/internal/model"
+)
+
+type PostStore struct {
+	rwMutex sync.RWMutex
+	store   map[string]*model.Post
+}
+
+func NewPostStore() *PostStore {
+	return &PostStore{
+		store: make(map[string]*model.Post),
+	}
+}
+
+func (s *PostStore) Create(ctx *context.Context, post *model.Post) (*model.Post, error) {
+	s.rwMutex.Lock()
+	defer s.rwMutex.Unlock()
+	if _, ok := s.store[post.ID]; ok {
+		return nil, fmt.Errorf(errors.PostAlreadyExists)
+	}
+	s.store[post.ID] = post
+	return post, nil
+}
+
+func (s *PostStore) Read(ctx *context.Context, id string) (*model.Post, error) {
+	s.rwMutex.RLock()
+	defer s.rwMutex.RUnlock()
+	post, ok := s.store[id]
+	if !ok {
+		return nil, fmt.Errorf(errors.PostNotFound)
+	}
+	return post, nil
+}
+
+func (s *PostStore) Update(ctx *context.Context, postID, title, content, author string, tags []string, modTime time.Time) (*model.Post, error) {
+	s.rwMutex.Lock()
+	defer s.rwMutex.Unlock()
+	post, ok := s.store[postID]
+	if !ok {
+		return nil, fmt.Errorf(errors.PostNotFound)
+	}
+	post.Title = title
+	post.Content = content
+	post.Author = author
+	post.Tags = tags
+	post.LastModified = modTime
+	s.store[post.ID] = post
+	return post, nil
+}
+
+func (s *PostStore) Delete(ctx *context.Context, id string) string {
+	s.rwMutex.Lock()
+	defer s.rwMutex.Unlock()
+	_, ok := s.store[id]
+	if !ok {
+		return errors.PostNotFound
+	}
+	delete(s.store, id)
+	return fmt.Sprintf("post deleted: %s", id)
+}
