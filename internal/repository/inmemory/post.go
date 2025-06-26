@@ -48,10 +48,18 @@ func (s *PostStore) Update(ctx *context.Context, postID, title, content, author 
 	if !ok {
 		return nil, fmt.Errorf(errors.PostNotFound)
 	}
-	post.Title = title
-	post.Content = content
-	post.Author = author
-	post.Tags = tags
+	if title != "" {
+		post.Title = title
+	}
+	if content != "" {
+		post.Content = content
+	}
+	if author != "" {
+		post.Author = author
+	}
+	if tags != nil {
+		post.Tags = append(post.Tags, tags...)
+	}
 	post.LastModified = modTime
 	s.store[post.ID] = post
 	return post, nil
