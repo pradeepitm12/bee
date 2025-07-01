@@ -101,7 +101,7 @@ func (s *PostStore) List(ctx *context.Context) []*model.Post {
 	slices.SortFunc(posts, func(posta, postb *model.Post) int {
 		if posta.Title < postb.Title {
 			return -1
-		} else {
+		} else if posta.Title > postb.Title {
 			return 1
 		}
 		return 0
