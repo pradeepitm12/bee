@@ -79,6 +79,24 @@ func (ph *PostHandler) DeletePost(ctx context.Context, req *blogpb.DeleteRequest
 	return resp, nil
 }
 
+func (ph *PostHandler) ListPost(ctx context.Context, req *blogpb.ListRequest) (*blogpb.ListResponse, error) {
+	log.Printf("Received ListPost Request")
+	posts := ph.repo.List(&ctx)
+	resp := &blogpb.ListResponse{
+		Post: transformToPosts(posts),
+	}
+	return resp, nil
+}
+
+func transformToPosts(posts []*model.Post) []*blogpb.Post {
+	transformedPosts := []*blogpb.Post{}
+
+	for _, post := range posts {
+		tposts := transformToPost(post)
+		transformedPosts = append(transformedPosts, tposts)
+	}
+	return transformedPosts
+}
 func transformToPost(p *model.Post) *blogpb.Post {
 	return &blogpb.Post{
 		PostID:          p.ID,

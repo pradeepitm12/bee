@@ -126,3 +126,7 @@ Post deleted successfully
 As expected, post not found after delete: rpc error: code = NotFound desc = post not found
 
 
+
+post1: dff9fd08-78b0-4a64-a547-3c4259de509b
+post2: 6b35cb75-9b7c-4943-a0a9-84be4c4d6611
+

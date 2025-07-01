@@ -12,4 +12,5 @@ type PostRepository interface {
 	Read(ctx *context.Context, id string) (*model.Post, error)
 	Update(ctx *context.Context, postID, title, content, author string, tags []string, modTime time.Time) (*model.Post, error)
 	Delete(ctx *context.Context, id string) string
+	List(ctx *context.Context) []*model.Post
 }

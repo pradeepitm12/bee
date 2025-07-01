@@ -8,7 +8,6 @@ package blogpb
 
 import (
 	context "context"
-
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -24,16 +23,20 @@ const (
 	BlogPostService_ReadPost_FullMethodName   = "/blog.BlogPostService/ReadPost"
 	BlogPostService_UpdatePost_FullMethodName = "/blog.BlogPostService/UpdatePost"
 	BlogPostService_DeletePost_FullMethodName = "/blog.BlogPostService/DeletePost"
+	BlogPostService_ListPost_FullMethodName   = "/blog.BlogPostService/ListPost"
 )
 
 // BlogPostServiceClient is the client API for BlogPostService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+//
+// BlogPostService contains services to create, read, delete, and update a post.
 type BlogPostServiceClient interface {
 	CreatePost(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
 	ReadPost(ctx context.Context, in *ReadRequest, opts ...grpc.CallOption) (*ReadResponse, error)
 	UpdatePost(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error)
 	DeletePost(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*DeleteResponse, error)
+	ListPost(ctx context.Context, in *ListRequest, opts ...grpc.CallOption) (*ListResponse, error)
 }
 
 type blogPostServiceClient struct {
@@ -84,14 +87,27 @@ func (c *blogPostServiceClient) DeletePost(ctx context.Context, in *DeleteReques
 	return out, nil
 }
 
+func (c *blogPostServiceClient) ListPost(ctx context.Context, in *ListRequest, opts ...grpc.CallOption) (*ListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListResponse)
+	err := c.cc.Invoke(ctx, BlogPostService_ListPost_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // BlogPostServiceServer is the server API for BlogPostService service.
 // All implementations must embed UnimplementedBlogPostServiceServer
 // for forward compatibility.
+//
+// BlogPostService contains services to create, read, delete, and update a post.
 type BlogPostServiceServer interface {
 	CreatePost(context.Context, *CreateRequest) (*CreateResponse, error)
 	ReadPost(context.Context, *ReadRequest) (*ReadResponse, error)
 	UpdatePost(context.Context, *UpdateRequest) (*UpdateResponse, error)
 	DeletePost(context.Context, *DeleteRequest) (*DeleteResponse, error)
+	ListPost(context.Context, *ListRequest) (*ListResponse, error)
 	mustEmbedUnimplementedBlogPostServiceServer()
 }
 
@@ -113,6 +129,9 @@ func (UnimplementedBlogPostServiceServer) UpdatePost(context.Context, *UpdateReq
 }
 func (UnimplementedBlogPostServiceServer) DeletePost(context.Context, *DeleteRequest) (*DeleteResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeletePost not implemented")
+}
+func (UnimplementedBlogPostServiceServer) ListPost(context.Context, *ListRequest) (*ListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListPost not implemented")
 }
 func (UnimplementedBlogPostServiceServer) mustEmbedUnimplementedBlogPostServiceServer() {}
 func (UnimplementedBlogPostServiceServer) testEmbeddedByValue()                         {}
@@ -207,6 +226,24 @@ func _BlogPostService_DeletePost_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BlogPostService_ListPost_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BlogPostServiceServer).ListPost(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BlogPostService_ListPost_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BlogPostServiceServer).ListPost(ctx, req.(*ListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // BlogPostService_ServiceDesc is the grpc.ServiceDesc for BlogPostService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -229,6 +266,10 @@ var BlogPostService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeletePost",
 			Handler:    _BlogPostService_DeletePost_Handler,
+		},
+		{
+			MethodName: "ListPost",
+			Handler:    _BlogPostService_ListPost_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

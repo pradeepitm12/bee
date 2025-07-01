@@ -66,10 +66,20 @@ message DeleteResponse{
    string message=2;
 }
 
+
+message ListRequest{
+
+}
+
+message ListResponse{
+   repeated Post post=1;
+}
+
 // BlogPostService contains services to create, read, delete, and update a post.
 service BlogPostService {
   rpc CreatePost (CreateRequest) returns (CreateResponse);
   rpc ReadPost (ReadRequest)returns (ReadResponse);
   rpc UpdatePost (UpdateRequest)returns (UpdateResponse);
   rpc DeletePost (DeleteRequest)returns (DeleteResponse);
+  rpc ListPost (ListRequest)returns (ListResponse);
 }
